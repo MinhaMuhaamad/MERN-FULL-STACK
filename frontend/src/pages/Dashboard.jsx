@@ -1,9 +1,11 @@
-// Dashboard Component - Protected Route with User Data
+// Enhanced Dashboard Component - Profile/Settings Toggle with useState
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 
 const Dashboard = () => {
-  const { user, api } = useAuth()
+  const { user, api, isAdmin } = useAuth()
+
+  // Existing state
   const [userPosts, setUserPosts] = useState([])
   const [stats, setStats] = useState({
     totalPosts: 0,
@@ -11,6 +13,21 @@ const Dashboard = () => {
     draftPosts: 0
   })
   const [loading, setLoading] = useState(true)
+
+  // NEW: Toggle state for Profile/Settings view
+  // useState Hook: [currentValue, functionToUpdateValue] = useState(initialValue)
+  const [isProfileView, setIsProfileView] = useState(true) // true = Profile, false = Settings
+
+  // NEW: Profile data state (fetched from backend)
+  const [profileData, setProfileData] = useState({
+    firstName: '',
+    lastName: '',
+    bio: '',
+    avatar: '',
+    joinedDate: '',
+    lastLogin: ''
+  })
+  const [profileLoading, setProfileLoading] = useState(false)
 
   useEffect(() => {
     fetchUserData()
@@ -21,7 +38,7 @@ const Dashboard = () => {
       // Fetch user's posts
       const postsResponse = await api.get('/posts')
       const allPosts = postsResponse.data.posts || []
-      
+
       // Filter posts by current user
       const myPosts = allPosts.filter(post => post.author._id === user.id)
       setUserPosts(myPosts)
@@ -29,7 +46,7 @@ const Dashboard = () => {
       // Calculate stats
       const published = myPosts.filter(post => post.status === 'published').length
       const draft = myPosts.filter(post => post.status === 'draft').length
-      
+
       setStats({
         totalPosts: myPosts.length,
         publishedPosts: published,
@@ -133,7 +150,7 @@ const Dashboard = () => {
                   <button className="btn btn-sm btn-secondary">
                     Edit
                   </button>
-                  <button 
+                  <button
                     className="btn btn-sm btn-danger"
                     onClick={() => deletePost(post._id)}
                   >

@@ -1,27 +1,23 @@
-// MERN Stack Frontend - Main App Component
-import { useState, useEffect } from 'react'
+// MERN Stack Frontend - Main App Component with Role-Based Authentication
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
 // Components
 import Navbar from './components/Navbar'
+import AdminLayout from './components/AdminLayout'
+import { ProtectedRoute, AdminRoute, UserRoute, PublicRoute } from './components/ProtectedRoute'
+
+// Pages
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Posts from './pages/Posts'
 import CreatePost from './pages/CreatePost'
+import Unauthorized from './pages/Unauthorized'
 
 // Context
-import { AuthProvider, useAuth } from './context/AuthContext'
-
-// Protected Route Component
-const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth()
-
-  if (loading) return <div>Loading...</div>
-  return user ? children : <Navigate to="/login" />
-}
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
   return (
@@ -33,21 +29,44 @@ function App() {
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
               <Route path="/posts" element={<Posts />} />
 
-              {/* Protected Routes */}
+              {/* Auth Routes - Redirect if already logged in */}
+              <Route path="/login" element={
+                <PublicRoute>
+                  <Login />
+                </PublicRoute>
+              } />
+              <Route path="/register" element={
+                <PublicRoute>
+                  <Register />
+                </PublicRoute>
+              } />
+
+              {/* User Routes */}
               <Route path="/dashboard" element={
-                <ProtectedRoute>
+                <UserRoute>
                   <Dashboard />
-                </ProtectedRoute>
+                </UserRoute>
               } />
               <Route path="/create-post" element={
                 <ProtectedRoute>
                   <CreatePost />
                 </ProtectedRoute>
               } />
+
+              {/* Admin Routes */}
+              <Route path="/admin/*" element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              } />
+
+              {/* Error Routes */}
+              <Route path="/unauthorized" element={<Unauthorized />} />
+
+              {/* Catch all route */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </main>
         </div>

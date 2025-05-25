@@ -25,8 +25,26 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin','moderator'],
     default: 'user'
+  },
+  permissions: {
+    type: [String], // Array of permissions for role-based access control
+    default: [], // Default empty for non-admins
+    enum: [
+      'manage_users', // Can create/delete/update users
+      'manage_content', // Can approve/delete content
+      'view_reports', // Can view analytics or reports
+      'manage_settings' // Can modify system settings
+    ]
+  },
+  adminNotes: { // Optional admin-specific field
+    type: String,
+    default: '',
+    maxlength: [500, 'Admin notes cannot exceed 500 characters']
+  },
+  lastLogin: { // Optional admin-specific field
+    type: Date
   },
   profile: {
     firstName: String,
@@ -64,6 +82,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
 userSchema.methods.toJSON = function() {
   const user = this.toObject();
   delete user.password;
+  delete user.adminNotes;
   return user;
 };
 

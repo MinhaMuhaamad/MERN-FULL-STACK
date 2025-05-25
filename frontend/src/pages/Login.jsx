@@ -37,9 +37,11 @@ const Login = () => {
 
     try {
       const result = await login(formData.email, formData.password)
-      
+
       if (result.success) {
-        navigate('/dashboard')
+        // Role-based redirect
+        const redirectPath = result.redirectTo || (result.user.role === 'admin' ? '/admin' : '/dashboard')
+        navigate(redirectPath)
       } else {
         setError(result.error)
       }
@@ -55,7 +57,7 @@ const Login = () => {
       <div className="auth-container">
         <div className="auth-card">
           <h2>Login</h2>
-          
+
           {error && (
             <div className="error-message">
               {error}
@@ -89,8 +91,8 @@ const Login = () => {
               />
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className="btn btn-primary"
               disabled={loading}
             >
@@ -100,7 +102,7 @@ const Login = () => {
 
           <div className="auth-links">
             <p>
-              Don't have an account? 
+              Don't have an account?
               <Link to="/register"> Register here</Link>
             </p>
           </div>

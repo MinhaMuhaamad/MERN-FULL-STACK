@@ -29,13 +29,13 @@ router.post('/register', [
     const { username, email, password } = req.body;
 
     // Check if user already exists
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { username }] 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
     });
 
     if (existingUser) {
-      return res.status(400).json({ 
-        message: 'User already exists with this email or username' 
+      return res.status(400).json({
+        message: 'User already exists with this email or username'
       });
     }
 
@@ -100,7 +100,8 @@ router.post('/login', [
         username: user.username,
         email: user.email,
         role: user.role
-      }
+      },
+      redirectTo: user.role === 'admin' ? '/admin' : '/dashboard'
     });
   } catch (error) {
     console.error(error);

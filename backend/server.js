@@ -16,7 +16,17 @@ console.log('🔄 Attempting to connect to MongoDB...');
 console.log('MongoDB URI:', process.env.MONGODB_URI ? 'URI loaded' : 'URI not found');
 
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB Connected'))
+  .then(async () => {
+    console.log('✅ MongoDB Connected');
+
+    // Create default admin user if it doesn't exist
+    try {
+      const { createDefaultAdmin } = require('./utils/createAdmin');
+      await createDefaultAdmin();
+    } catch (error) {
+      console.log('⚠️  Admin creation skipped:', error.message);
+    }
+  })
   .catch(err => console.error('❌ MongoDB Connection Error:', err));
 
 // Routes - Load them after server starts
@@ -25,6 +35,7 @@ try {
   app.use('/api/auth', require('./routes/auth'));
   app.use('/api/users', require('./routes/users'));
   app.use('/api/posts', require('./routes/posts'));
+  app.use('/api/admin', require('./routes/admin'));
   console.log('✅ Routes loaded successfully');
 } catch (error) {
   console.error('❌ Error loading routes:', error.message);

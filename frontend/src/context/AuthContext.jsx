@@ -79,11 +79,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password })
-      const { token, user } = response.data
+      const { token, user, redirectTo } = response.data
 
       localStorage.setItem('token', token)
       setUser(user)
-      return { success: true }
+      return { success: true, user, redirectTo }
     } catch (error) {
       return {
         success: false,
@@ -115,12 +115,22 @@ export const AuthProvider = ({ children }) => {
     setUser(null)
   }
 
+  // Role checking utilities
+  const isAdmin = () => user?.role === 'admin'
+  const isUser = () => user?.role === 'user'
+  const hasRole = (role) => user?.role === role
+  const isAuthenticated = () => !!user
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    isAdmin,
+    isUser,
+    hasRole,
+    isAuthenticated,
     api // Export api instance for other components
   }
 
