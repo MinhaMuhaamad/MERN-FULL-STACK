@@ -1,10 +1,9 @@
 // Enhanced Dashboard Component - Profile/Settings Toggle with useState
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
-
+import ThemeTest from '../components/ThemeTest';
 const Dashboard = () => {
   const { user, api, isAdmin } = useAuth()
-
   // Existing state
   const [userPosts, setUserPosts] = useState([])
   const [stats, setStats] = useState({
@@ -13,10 +12,14 @@ const Dashboard = () => {
     draftPosts: 0
   })
   const [loading, setLoading] = useState(true)
-
   // NEW: Toggle state for Profile/Settings view
   // useState Hook: [currentValue, functionToUpdateValue] = useState(initialValue)
   const [isProfileView, setIsProfileView] = useState(true) // true = Profile, false = Settings
+  // Theme state with localStorage persistence
+  const [theme, setTheme] = useState(() => {
+    // Get theme from localStorage or default to 'light'
+    return localStorage.getItem('dashboardTheme') || 'light';
+  });
 
   // NEW: Profile data state (fetched from backend)
   const [profileData, setProfileData] = useState({
@@ -34,13 +37,19 @@ const Dashboard = () => {
     fetchProfileData() // NEW: Fetch profile data on component mount
   }, [])
 
+  // Enhanced theme toggle with localStorage persistence
+  const toggleTheme = () => {
+    const newTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
+    localStorage.setItem('dashboardTheme', newTheme);
+    console.log('Theme toggled to:', newTheme);
+  }
   // NEW: Toggle function to switch between Profile and Settings view
   // This function uses setIsProfileView to update the state
   const toggleView = () => {
     setIsProfileView(!isProfileView) // Flip the boolean value
     // !isProfileView means: if currently true, make it false; if false, make it true
   }
-
   // NEW: Function to fetch detailed profile data from backend
   const fetchProfileData = async () => {
     try {
@@ -95,7 +104,6 @@ const Dashboard = () => {
       setLoading(false)
     }
   }
-
   const deletePost = async (postId) => {
     if (window.confirm('Are you sure you want to delete this post?')) {
       try {
@@ -109,30 +117,47 @@ const Dashboard = () => {
       }
     }
   }
-
   if (loading) {
-    return <div className="loading">Loading dashboard...</div>
+    return (
+      <div className={`loading ${theme}-theme`}>
+        <div className="loading-spinner"></div>
+        <p>Loading dashboard...</p>
+      </div>
+    )
   }
-
   return (
-    <div className="dashboard">
+    <div className={`dashboard ${theme}-theme`}>
+      <ThemeTest />
+
+      {/* Dashboard Header with Theme Controls */}
       <div className="dashboard-header">
         <h1>Welcome to your Dashboard, {user.username}!</h1>
         <p>Manage your posts and view your statistics</p>
 
-        {/* NEW: Toggle Buttons for Profile/Settings View */}
+        {/* Enhanced Theme Toggle Controls */}
+        <div className="theme-toggle">
+          <button
+            onClick={toggleTheme}
+            className={`btn theme-btn ${theme === 'dark' ? 'btn-secondary' : 'btn-primary'}`}
+          >
+            {theme === 'light' ? '🌙 Switch to Dark Theme' : '☀️ Switch to Light Theme'}
+          </button>
+          <p className="current-theme">Current theme: {theme}</p>
+        </div>
+
+        {/* View Toggle Controls */}
         <div className="view-toggle">
           <button
             onClick={toggleView}
-            className={`toggle-btn ${isProfileView ? 'active' : ''}`}
+            className={`btn toggle-btn ${isProfileView ? 'active' : ''}`}
           >
-            📊 Profile View
+            👤 Profile
           </button>
           <button
             onClick={toggleView}
-            className={`toggle-btn ${!isProfileView ? 'active' : ''}`}
+            className={`btn toggle-btn ${!isProfileView ? 'active' : ''}`}
           >
-            ⚙️ Settings View
+            ⚙️ Settings
           </button>
         </div>
       </div>
@@ -342,3 +367,12 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
+
+
+
+
+
+
+
+

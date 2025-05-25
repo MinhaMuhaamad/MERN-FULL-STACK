@@ -1412,3 +1412,153 @@ body {
     flex-direction: column;
   }
 }
+
+/* Enhanced Theme Toggle Styles */
+.theme-toggle {
+  margin: 20px 0;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.theme-btn {
+  width: 100%;
+  max-width: 280px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.current-theme {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Enhanced Theme Colors */
+.light-theme {
+  background-color: #f8f9fa;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.dark-theme {
+  background-color: #1a1a1a;
+  color: #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+/* Dark theme component styling */
+.dark-theme .stat-card,
+.dark-theme .profile-details,
+.dark-theme .profile-card,
+.dark-theme .settings-section,
+.dark-theme .post-item,
+.dark-theme .no-posts {
+  background-color: #2d2d2d;
+  color: #f8f9fa;
+  border-color: #444;
+}
+
+.dark-theme .theme-toggle {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: #444;
+}
+
+.dark-theme .current-theme {
+  color: #ccc;
+}
+
+.dark-theme .toggle-btn {
+  background: #444;
+  color: #f8f9fa;
+  border-color: #666;
+}
+
+.dark-theme .toggle-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+.dark-theme .toggle-btn:hover {
+  background: #555;
+}
+
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4 {
+  color: #f8f9fa;
+}
+
+.dark-theme .profile-username,
+.dark-theme .profile-email,
+.dark-theme .profile-role {
+  color: #ccc;
+}
+
+.dark-theme .dashboard-header p {
+  color: #ccc;
+}
+
+.dark-theme .post-meta span {
+  color: #aaa;
+}
+
+.dark-theme .settings-form input,
+.dark-theme .settings-form textarea,
+.dark-theme .settings-form select {
+  background-color: #333;
+  color: #f8f9fa;
+  border-color: #555;
+}
+
+.dark-theme .settings-form label {
+  color: #f8f9fa;
+}
+
+/* Loading state theme support */
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 40px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+.dark-theme .loading {
+  background-color: #1a1a1a;
+  color: #f8f9fa;
+}
+
+.dark-theme .loading-spinner {
+  border-color: #444;
+  border-top-color: #007bff;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
